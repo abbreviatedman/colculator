@@ -39,7 +39,8 @@ const style = {
   display: "grid",
   gridTemplateColumns: "repeat(4, 1fr)",
   margin: "0 auto",
-  width: "300px",
+  width: "600px",
+  height: "600px",
   gap: "5px",
 };
 

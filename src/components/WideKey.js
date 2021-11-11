@@ -9,6 +9,7 @@ const WideKey = (props) => {
 const style = {
   border: "1px solid black",
   gridColumn: "1 / span 2",
+  fontSize: "3em",
 };
 
 export default WideKey;

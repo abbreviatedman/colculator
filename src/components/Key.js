@@ -8,6 +8,7 @@ const Key = (props) => {
 
 const style = {
   border: "1px solid black",
+  fontSize: "3em",
 };
 
 export default Key;
