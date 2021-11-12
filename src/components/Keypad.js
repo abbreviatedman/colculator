@@ -1,5 +1,4 @@
 import Key from "./Key";
-import WideKey from "./WideKey";
 
 const Keypad = (props) => {
   const symbols = [
@@ -24,13 +23,14 @@ const Keypad = (props) => {
     "=",
   ];
 
-  const keys = symbols.map((symbol, i) =>
-    symbol === "0" ? (
-      <WideKey key="zero" symbol="0" afterClick={props.afterClick} />
-    ) : (
-      <Key key={i} symbol={symbol} afterClick={props.afterClick} />
-    )
-  );
+  const keys = symbols.map((symbol, i) => (
+    <Key
+      key={symbol}
+      symbol={symbol}
+      wide={symbol === "0"}
+      afterClick={props.afterClick}
+    />
+  ));
 
   return <div style={style}>{keys}</div>;
 };

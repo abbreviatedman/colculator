@@ -1,7 +1,6 @@
 import { Component } from "react";
 import Keypad from "./components/Keypad";
 import Display from "./components/Display";
-import "./App.css";
 
 class App extends Component {
   constructor() {
@@ -10,16 +9,19 @@ class App extends Component {
       display: "0",
       answer: 0,
       previousOperation: "",
-      resetting: false,
       error: "",
     };
   }
 
-  formatNumber = (num) =>
-    Number(num.replaceAll(",", "")).toLocaleString("en-US");
+  convertToNumber = (str) => Number(str.replaceAll(",", ""));
+
+  convertToString = (num) => num.toLocaleString("en-US");
+
+  formatDisplay = (str) =>
+    Number(str.replaceAll(",", "")).toLocaleString("en-US");
 
   process = (symbol) => {
-    const { display, answer, previousOperation, resetting } = this.state;
+    const { display, answer, previousOperation } = this.state;
     switch (symbol) {
       case "1":
       case "2":
@@ -31,13 +33,13 @@ class App extends Component {
       case "8":
       case "9":
         const newDisplay =
-          display === "0" ? symbol : this.formatNumber(display + symbol);
+          display === "0" ? symbol : this.formatDisplay(display + symbol);
         this.setState({ display: newDisplay });
         break;
 
       case "0":
         if (display !== "0") {
-          this.setState({ display: this.formatNumber(display + symbol) });
+          this.setState({ display: this.formatDisplay(display + symbol) });
         }
 
         break;
@@ -54,22 +56,24 @@ class App extends Component {
           display: "0",
           answer: 0,
           previousOperation: "",
-          resetting: false,
         });
 
         break;
 
       case "+/-":
-        this.setState({
-          display: this.formatNumber((-display.replaceAll(",", "")).toString()),
-        });
+        {
+          const number = this.convertToNumber(display);
+          const newDisplay = this.convertToString(-number);
+          this.setState({ display: newDisplay });
+        }
+
         break;
 
       case "÷":
         if (!previousOperation) {
           this.setState({
             display: "0",
-            answer: Number(display.replaceAll(",", "")),
+            answer: this.convertToNumber(display),
             previousOperation: "÷",
           });
         } else {
@@ -85,7 +89,7 @@ class App extends Component {
         if (!previousOperation) {
           this.setState({
             display: "0",
-            answer: Number(display.replaceAll(",", "")),
+            answer: this.convertToNumber(display),
             previousOperation: "x",
           });
         } else {
@@ -101,7 +105,7 @@ class App extends Component {
         if (!previousOperation) {
           this.setState({
             display: "0",
-            answer: Number(display.replaceAll(",", "")),
+            answer: this.convertToNumber(display),
             previousOperation: "-",
           });
         } else {
@@ -117,7 +121,7 @@ class App extends Component {
         if (!previousOperation) {
           this.setState({
             display: "0",
-            answer: Number(display.replaceAll(",", "")),
+            answer: this.convertToNumber(display),
             previousOperation: "+",
           });
         } else {
@@ -133,15 +137,14 @@ class App extends Component {
         if (previousOperation) {
           const newAnswer = this.processPreviousOperation(
             answer,
-            Number(display.replaceAll(",", "")),
+            this.convertToNumber(display),
             previousOperation
           );
 
           this.setState({
-            display: this.formatNumber(newAnswer.toString()),
+            display: this.convertToString(newAnswer),
             answer: 0,
             previousOperation: "",
-            resetting: true,
           });
         }
 
@@ -165,13 +168,15 @@ class App extends Component {
 
       case "x":
         return x * y;
+
+      default:
+        break;
     }
   };
 
   render() {
-    console.log(this.state);
     return (
-      <div className="App">
+      <div style={style}>
         <Display display={this.state.display} />
         <Keypad afterClick={this.process} />
         <h1 style={style}>{this.state.error}</h1>
@@ -181,7 +186,9 @@ class App extends Component {
 }
 
 const style = {
-  color: "red",
+  width: "600px",
+  margin: "10px auto 10px",
+  padding: "0px 5px",
 };
 
 export default App;
